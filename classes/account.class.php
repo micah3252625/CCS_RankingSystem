@@ -53,6 +53,57 @@ class Account
     }
 
     /**
+     * Login function to authenticate a user
+     *
+     * @param string $email_or_username The email or username
+     * @param string $password The raw password entered by the user
+     * @return bool True if authentication succeeds, False otherwise
+     */
+    public function login($email_or_username, $password)
+    {
+        $sql = "SELECT * FROM account WHERE username = :username OR user_id IN (
+                    SELECT id FROM user WHERE email = :email
+                )";
+        $query = $this->db->connect()->prepare($sql);
+
+        $query->bindParam(':username', $email_or_username, PDO::PARAM_STR);
+        $query->bindParam(':email', $email_or_username, PDO::PARAM_STR);
+
+        $query->execute();
+
+        if ($result = $query->fetch(PDO::FETCH_ASSOC)) {
+            // Verify the password
+            if (password_verify($password, $result['password'])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Fetch user data by username or email
+     *
+     * @param string $email_or_username The email or username
+     * @return array|false User data on success, False otherwise
+     */
+    public function fetch($email_or_username)
+    {
+        $sql = "SELECT account.*
+            FROM account 
+            JOIN user ON account.user_id = user.id 
+            WHERE account.username = :username OR user.email = :email";
+
+        $query = $this->db->connect()->prepare($sql);
+        $query->bindParam(':username', $email_or_username, PDO::PARAM_STR);
+        $query->bindParam(':email', $email_or_username, PDO::PARAM_STR);
+
+        $query->execute();
+
+        return $query->fetch(PDO::FETCH_ASSOC);
+    }
+
+
+    /**
      * Check if a username already exists
      */
     function usernameExist($username)
