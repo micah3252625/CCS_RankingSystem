@@ -1,0 +1,60 @@
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="staticBackdropedit"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="staticBackdropLabel"
+  aria-hidden="true"
+  data-id=""
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Stock In/Out Product</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <form action="" method="post" id="form-stock-product">
+        <div class="modal-body">
+          <div class="mb-2">
+            <label for="quantity" class="form-label">Quantity</label>
+            <input type="number" class="form-control" id="quantity" name="quantity" />
+            <div class="invalid-feedback"></div>
+          </div>
+
+          <div class="mb-2">
+            <label for="status">Status</label><br>
+            <input type="radio" class="stocks me-2" value="in" name="status" id="stockin"><label for="stockin">Stock In</label><br>
+            <input type="radio" class="stocks me-2" value="out" name="status" id="stockout"><label for="stockout">Stock Out</label>
+            <div class="invalid-feedback status-feedback"></div>
+          </div>
+
+          <div class="mb-2">
+            <label for="reason">Reason</label><br>
+            <textarea name="reason" id="reason" cols="30" class="form-control"></textarea>
+            <div class="invalid-feedback"></div>
+            
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Close
+          </button>
+          <button type="submit" class="btn btn-primary brand-bg-color">
+            Save
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
