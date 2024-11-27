@@ -11,6 +11,8 @@ class Account
 
     public $password = '';
 
+    public $role_id = null;
+
 
     protected $db;
 
@@ -36,15 +38,15 @@ class Account
         $hashedPassword = password_hash($this->password, PASSWORD_DEFAULT);
 
         // Insert account into the database
-        $sql = "INSERT INTO account (username, password, user_id, role) 
-                VALUES (:username, :password, :user_id, :role)";
+        $sql = "INSERT INTO account ( user_id, username, password, role_id) 
+                VALUES (:user_id, :username, :password, :role_id)";
         $query = $this->db->connect()->prepare($sql);
 
         // Bind parameters
+        $query->bindParam(':user_id', $user_id, PDO::PARAM_INT);
         $query->bindParam(':username', $this->username);
         $query->bindParam(':password', $hashedPassword);
-        $query->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-        $query->bindParam(':role', $this->role);
+        $query->bindParam(':role_id', $this->role_id);
 
         // Execute query
         return $query->execute();
