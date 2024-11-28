@@ -10,7 +10,6 @@ $email_or_username = $password = '';
 $accountObj = new Account();
 $loginErr = '';
 
-
 try {
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {

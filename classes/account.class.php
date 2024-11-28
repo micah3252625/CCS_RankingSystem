@@ -13,6 +13,8 @@ class Account
 
     public $role_id = null;
 
+    public $status = '';
+
 
     protected $db;
 
@@ -127,10 +129,57 @@ class Account
         return $query->fetchColumn() > 0;
     }
 
+    /**
+     * Fetch account details for a specific account
+     *
+     * @param string|int $identifier The username or ID of the account
+     * @return array|false Account details on success, False otherwise
+     */
+    public function getAccountDetails($id)
+    {
+        try {
+            // Query to fetch account details by ID or username
+            $sql = "SELECT 
+                        a.id AS account_id,
+                        a.username,
+                        a.role_id,
+                        a.status,
+                        a.created_at,
+                        u.id AS user_id,
+                        u.identifier,
+                        u.firstname,
+                        u.middlename,
+                        u.lastname,
+                        u.email,
+                        u.course,
+                        u.department
+                    FROM account a
+                    LEFT JOIN user u ON a.user_id = u.id
+                    WHERE a.id = :id";
+
+            // Prepare the query
+            $query = $this->db->connect()->prepare($sql);
+
+            // Bind parameters
+            $query->bindParam(':id', $id, PDO::PARAM_INT);
+
+            // Execute the query
+            $query->execute();
+
+            // Fetch the account details
+            return $query->fetch(PDO::FETCH_ASSOC); // Return a single row as an associative array
+        } catch (PDOException $e) {
+            // Log the error
+            error_log("Failed to fetch account details: " . $e->getMessage());
+            return false; // Return false on error
+        }
+    }
+
     public function getAccounts() {
         try {
             // Query to join user and account tables
             $sql = "SELECT 
+                    a.id,
                     u.identifier,
                     u.firstname,
                     u.middlename,
@@ -140,6 +189,7 @@ class Account
                     u.department,
                     a.username,
                     a.role_id,
+                    a.status,
                     a.created_at
                 FROM user u
                 LEFT JOIN account a ON u.id = a.user_id
@@ -158,5 +208,77 @@ class Account
         }
     }
 
+    public function updateAccount($id, $data) {
+        try {
+            // Initialize course and department as null
+            $course = null;
+            $department = null;
+
+            // Determine which field to update based on role_id
+            if (isset($data['role_id'])) {
+                if ($data['role_id'] == 3) {
+                    $course = $data['other']; // Assign "other" to course for students
+                } elseif ($data['role_id'] == 2) {
+                    $department = $data['other']; // Assign "other" to department for staff
+                }
+            }
+
+            $sql = "UPDATE account a
+                JOIN user u ON a.user_id = u.id
+                SET 
+                    u.identifier = :identifier,
+                    u.firstname = :firstname,
+                    u.middlename = :middlename,
+                    u.lastname = :lastname,
+                    u.email = :email,
+                    u.course = :course,
+                    u.department = :department,
+                    a.username = :username,
+                    a.status = :status
+                WHERE a.id = :id";
+
+            $query = $this->db->connect()->prepare($sql);
+
+            // Bind parameters
+            $query->bindParam(':identifier', $data['identifier']);
+            $query->bindParam(':firstname', $data['firstname']);
+            $query->bindParam(':middlename', $data['middlename']);
+            $query->bindParam(':lastname', $data['lastname']);
+            $query->bindParam(':email', $data['email']);
+            $query->bindParam(':course', $course); // Will be null if not updating course
+            $query->bindParam(':department', $department); // Will be null if not updating department
+            $query->bindParam(':username', $data['username']);
+            $query->bindParam(':status', $data['status']);
+            $query->bindParam(':id', $id, PDO::PARAM_INT);
+
+            // Execute the query
+            return $query->execute();
+        } catch (PDOException $e) {
+            error_log("Failed to update account: " . $e->getMessage());
+            return false;
+        }
+    }
+
+
+    public function deleteAccount($id) {
+        try {
+            // SQL query to delete the account and its related user
+            $sql = "DELETE a, u 
+                FROM account a
+                JOIN user u ON a.user_id = u.id
+                WHERE a.id = :id";
+
+            $query = $this->db->connect()->prepare($sql);
+
+            // Bind the account ID
+            $query->bindParam(':id', $id, PDO::PARAM_INT);
+
+            // Execute the query
+            return $query->execute();
+        } catch (PDOException $e) {
+            error_log("Failed to delete account: " . $e->getMessage());
+            return false;
+        }
+    }
 
 }
