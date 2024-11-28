@@ -32,32 +32,31 @@ if (file_exists($header_file)) {
     die("An error occurred while loading the dashboard. Please try again later.");
 }
 
-require_once '../classes/user.class.php'; // Include the User class
-$userObj = new User(); // Instantiate the User class
-
-// Fetch user details using the user ID stored in the session
-$userDetails = $userObj->getUserDetails($account['user_id']);
-
-// Check if user details are fetched successfully
-if ($userDetails) {
-    $username = isset($userDetails['username']) ? $userDetails['username'] : 'Guest'; // Replace 'username' with the actual column name in your DB
-} else {
-    // Log error message if user details are not fetched
-    error_log("Failed to fetch user details for user ID: " . $account['user_id']);
-    $username = "Unknown User";
-}
-$name = $userDetails['firstname'];
 ?>
+
     <div class="wrapper">
-    <?php require_once('includes/sidebar.php')?>
-    <div class="main p-3">
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">Dashboard</h4>
-                <h1>Hello, <?= $name ?>!</h1>
+        <?php include('includes/sidebar.php') ?>
+        <div class="main p-3">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Applications</h4>
+                    <div class="table-wrapper table-responsive">
+                        <table class="table table-bordered" style="width: 100%">
+                            <thead>
+                            <th>Student Name</th>
+                            <th>Studen ID</th>
+                            <th>Course & Year</th>
+                            <th>Submission Date</th>
+                            <th>Action</th>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<?php require_once('includes/footer.php')?>
+<?php include('includes/footer.php') ?>

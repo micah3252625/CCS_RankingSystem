@@ -50,4 +50,22 @@ class User
             return false;
         }
     }
+
+    public function getUserDetails($id) {
+        try {
+            $sql = "SELECT * FROM user WHERE id = :id";
+
+
+            $query = $this->db->connect()->prepare($sql);
+            $query->bindParam(':id', $id, PDO::PARAM_INT);
+            $query->execute();
+            // Fetch the user details
+            return $query->fetch(PDO::FETCH_ASSOC); // Return the fetched user details
+        } catch(PDOException $e) {
+            // Log the error
+            error_log("Failed to fetch user details: " . $e->getMessage());
+            return false; // Return false if there is an error
+        }
+    }
+
 }

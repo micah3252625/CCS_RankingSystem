@@ -126,4 +126,37 @@ class Account
         $query->execute();
         return $query->fetchColumn() > 0;
     }
+
+    public function getAccounts() {
+        try {
+            // Query to join user and account tables
+            $sql = "SELECT 
+                    u.identifier,
+                    u.firstname,
+                    u.middlename,
+                    u.lastname,
+                    u.email,
+                    u.course,
+                    u.department,
+                    a.username,
+                    a.role_id,
+                    a.created_at
+                FROM user u
+                LEFT JOIN account a ON u.id = a.user_id
+                      ORDER BY a.created_at ASC";
+
+            // Prepare and execute the query
+            $query = $this->db->connect()->prepare($sql);
+            $query->execute();
+
+            // Fetch all user and account details
+            return $query->fetchAll(PDO::FETCH_ASSOC); // Return all fetched rows as an array
+        } catch (PDOException $e) {
+            // Log the error
+            error_log("Failed to fetch user-account details: " . $e->getMessage());
+            return false; // Return false if there is an error
+        }
+    }
+
+
 }

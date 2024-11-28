@@ -10,7 +10,10 @@ $email_or_username = $password = '';
 $accountObj = new Account();
 $loginErr = '';
 
+
+
 try {
+
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Sanitize input
         $email_or_username = clean_input($_POST['email_or_username']);
@@ -25,6 +28,7 @@ try {
             // Check if data is fetched successfully
             if ($data) {
                 $_SESSION['account'] = $data;
+                header('Location: ../admin/dashboard.php');
                 exit();
             } else {
                 // Log error if fetch fails
