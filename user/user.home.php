@@ -47,18 +47,10 @@ if ($userDetails) {
     $username = "Unknown User";
 }
 $name = $userDetails['firstname'];
-
 ?>
-    <div class="wrapper">
-    <?php require_once('includes/sidebar.php')?>
-    <div class="main p-3">
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">Dashboard</h4>
-                <h1>Hello, <?= $name ?>!</h1>
-            </div>
-        </div>
-    </div>
-</div>
 
-<?php require_once('includes/footer.php')?>
+
+<main>
+    <?php require_once('includes/navbar.php')?>
+    <h1 class="p-3 text-center">Hello, <?= $name ?></h1>
+</main>

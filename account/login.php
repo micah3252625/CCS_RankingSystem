@@ -15,14 +15,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($accountObj->login($username, $password)) {
         $data = $accountObj->fetch($username);
         $_SESSION['account'] = $data;
-        header('location: ../admin/dashboard.php');
+        header('location: ../admin/staff.php');
     } else {
         $loginErr = 'Invalid username/password';
     }
 } else {
     if (isset($_SESSION['account'])) {
         if ($_SESSION['account']['is_staff']) {
-            header('location: ../admin/dashboard.php');
+            header('location: ../admin/staff.php');
         }
     }
 }

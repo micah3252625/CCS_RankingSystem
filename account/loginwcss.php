@@ -11,7 +11,6 @@ $accountObj = new Account();
 $loginErr = '';
 
 
-
 try {
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -24,11 +23,20 @@ try {
             // Fetch account details
             $data = $accountObj->fetch($email_or_username);
 
-
             // Check if data is fetched successfully
             if ($data) {
                 $_SESSION['account'] = $data;
-                header('Location: ../admin/dashboard.php');
+                switch ($data['role_id']) {
+                    case 1:
+                        header('Location: ../admin/dashboard.php');
+                        break;
+                    case 2:
+                        header('Location: ../staff/staff.php');
+                        break;
+                    case 3:
+                        header('Location: ../user/user.home.php');
+                        break;
+                }
                 exit();
             } else {
                 // Log error if fetch fails
