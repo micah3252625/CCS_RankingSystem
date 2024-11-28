@@ -2,7 +2,7 @@
 
 require_once 'database.class.php';
 
-class User
+class LeaderBoard
 {
     public $identifier = '';
     public $firstname = '';
